@@ -1,359 +1,365 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SNGR · Registro de Capacitación – Jóvenes en Acción</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SNGR · Registro de Capacitación – Jóvenes en Acción</title>
 
-  <meta name="description" content="Registro de actividades de capacitación del programa Jóvenes en Acción (SNGR).">
-  <meta name="theme-color" content="#2F338F">
+  <meta name="description" content="Registro de actividades de capacitación del programa Jóvenes en Acción (SNGR).">
+  <meta name="theme-color" content="#2F338F">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    /* === (TU CSS ORIGINAL, SIN CAMBIOS EN DISEÑO) === */
-    :root{
-      --brand:#2F338F; --brand-600:#242870;
-      --bg:#f4f6fb; --card:#ffffff;
-      --text:#1f2937; --muted:#6b7280; --line:#e5e7eb;
-      --radius:14px; --shadow:0 10px 25px rgba(17,24,39,.08);
-      --ok:#16a34a; --err:#dc2626; --info:#2563eb;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg); color:var(--text); display:flex; flex-direction:column;
-    }
-    .page-header{
-      background:linear-gradient(180deg,var(--brand) 0%, var(--brand-600) 100%);
-      color:#fff; padding:22px 16px;
-    }
-    .wrap{max-width:980px; margin:0 auto; display:flex; align-items:center; gap:12px}
-    .logo{height:44px}
-    .h-txt h1{margin:0; font-size:1.2rem; font-weight:700}
-    .h-txt p{margin:4px 0 0; opacity:.9}
-    main{flex:1; display:flex; justify-content:center; padding:26px 14px}
-    .card{
-      width:100%; max-width:980px; background:var(--card); border-radius:var(--radius);
-      box-shadow:var(--shadow); border:1px solid var(--line); overflow:hidden;
-    }
-    .card-head{padding:20px 20px 8px; border-bottom:1px solid var(--line)}
-    .card-head h2{margin:0; color:var(--brand); font-size:1.1rem}
-    .card-head p{margin:6px 0 0; color:var(--muted)}
-    .card-body{padding:20px}
-    .grid{display:grid; gap:14px; grid-template-columns:1fr}
-    @media(min-width:820px){ .grid{grid-template-columns:1fr 1fr} }
-    .full{grid-column:1 / -1}
-    label{font-weight:600; font-size:.92rem; margin-bottom:6px; display:block}
-    .input,.select,.textarea{
-      width:100%; padding:12px 12px; border:1px solid var(--line); border-radius:12px; background:#fff; font-size:1rem; outline:0;
-      transition:border .15s ease, box-shadow .15s ease;
-    }
-    .input:focus,.select:focus,.textarea:focus{border-color:#c7d2fe; box-shadow:0 0 0 4px rgba(59,130,246,.12)}
-    .input[readonly]{background:#f8fafc; color:#4b5563}
-    .row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-    .helper{color:var(--muted); font-size:.9rem; margin-top:4px}
-    .id-row{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:end}
-    .btn{border:0; border-radius:12px; padding:12px 14px; font-weight:700; cursor:pointer; font-size:1rem; display:inline-flex; align-items:center; gap:10px; justify-content:center;}
-    .btn-primary{background:var(--brand); color:#fff}
-    .btn-primary:hover{background:var(--brand-600)}
-    .btn[disabled]{opacity:.8; cursor:not-allowed}
-    .badge{
-      display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line);
-      padding:8px 10px; border-radius:999px; font-size:.9rem; color:#111827; background:#f8fafc;
-    }
-    .badge .ic {width:16px; height:16px;}
-    .badge.ok{border-color:#86efac; background:#ecfdf5; color:#065f46}
-    .badge.err{border-color:#fecaca; background:#fef2f2; color:#7f1d1d}
-    .ic{width:18px; height:18px; display:inline-block; vertical-align:middle}
-    .notice{
-      display:flex; gap:12px; align-items:flex-start;
-      padding:14px 16px; border:1px solid;
-      border-radius:12px; font-size:.95rem; margin:8px 0 16px;
-    }
-    .notice.err{border-color:var(--err); background:#fef2f2; color:#7f1d1d;}
-    .notice.ok{border-color:var(--ok); background:#ecfdf5; color:#065f46;}
-    .notice.info{border-color:#93c5fd; background:#eff6ff; color:var(--info);}
-    .session-info {
-      background: #f8fafc; border: 1px solid var(--line); border-radius: 12px;
-      padding: 16px; margin-top: 10px;
-    }
-    .session-info p { margin: 0 0 8px 0; font-size: 1rem; }
-    .session-info span { font-weight: 600; color: var(--brand); }
-    .spinner{
-      width:16px; height:16px; border-radius:50%;
-      border:2px solid rgba(255,255,255,.55);
-      border-right-color:transparent;
-      animation:spin .6s linear infinite;
-    }
-    @keyframes spin{to{transform:rotate(360deg)}}
-    footer{
-      text-align:center; padding:20px; color:var(--muted); font-size: 0.9rem;
-    }
-  </style>
+  <style>
+    /* === (TU CSS ORIGINAL, SIN CAMBIOS) === */
+    :root{
+      --brand:#2F338F; --brand-600:#242870;
+      --bg:#f4f6fb; --card:#ffffff;
+      --text:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+      --radius:14px; --shadow:0 10px 25px rgba(17,24,39,.08);
+      --ok:#16a34a; --err:#dc2626; --info:#2563eb;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg); color:var(--text); display:flex; flex-direction:column;
+    }
+    .page-header{
+      background:linear-gradient(180deg,var(--brand) 0%, var(--brand-600) 100%);
+      color:#fff; padding:22px 16px;
+    }
+    .wrap{max-width:980px; margin:0 auto; display:flex; align-items:center; gap:12px}
+    .logo{height:44px}
+    .h-txt h1{margin:0; font-size:1.2rem; font-weight:700}
+    .h-txt p{margin:4px 0 0; opacity:.9}
+    main{flex:1; display:flex; justify-content:center; padding:26px 14px}
+    .card{
+      width:100%; max-width:980px; background:var(--card); border-radius:var(--radius);
+      box-shadow:var(--shadow); border:1px solid var(--line); overflow:hidden;
+    }
+    .card-head{padding:20px 20px 8px; border-bottom:1px solid var(--line)}
+    .card-head h2{margin:0; color:var(--brand); font-size:1.1rem}
+    .card-head p{margin:6px 0 0; color:var(--muted)}
+    .card-body{padding:20px}
+    .grid{display:grid; gap:14px; grid-template-columns:1fr}
+    @media(min-width:820px){ .grid{grid-template-columns:1fr 1fr} }
+    .full{grid-column:1 / -1}
+    label{font-weight:600; font-size:.92rem; margin-bottom:6px; display:block}
+    .input,.select,.textarea{
+      width:100%; padding:12px 12px; border:1px solid var(--line); border-radius:12px; background:#fff; font-size:1rem; outline:0;
+      transition:border .15s ease, box-shadow .15s ease;
+    }
+    .input:focus,.select:focus,.textarea:focus{border-color:#c7d2fe; box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+    .input[readonly]{background:#f8fafc; color:#4b5563}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+    .helper{color:var(--muted); font-size:.9rem; margin-top:4px}
+    .id-row{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:end}
+    .btn{border:0; border-radius:12px; padding:12px 14px; font-weight:700; cursor:pointer; font-size:1rem; display:inline-flex; align-items:center; gap:10px; justify-content:center;}
+    .btn-primary{background:var(--brand); color:#fff}
+    .btn-primary:hover{background:var(--brand-600)}
+    .btn[disabled]{opacity:.8; cursor:not-allowed}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line);
+      padding:8px 10px; border-radius:999px; font-size:.9rem; color:#111827; background:#f8fafc;
+    }
+    .badge .ic {width:16px; height:16px;}
+    .badge.ok{border-color:#86efac; background:#ecfdf5; color:#065f46}
+    .badge.err{border-color:#fecaca; background:#fef2f2; color:#7f1d1d}
+    .ic{width:18px; height:18px; display:inline-block; vertical-align:middle}
+    .notice{
+      display:flex; gap:12px; align-items:flex-start;
+      padding:14px 16px; border:1px solid;
+      border-radius:12px; font-size:.95rem; margin:8px 0 16px;
+    }
+    .notice.err{border-color:var(--err); background:#fef2f2; color:#7f1d1d;}
+    .notice.ok{border-color:var(--ok); background:#ecfdf5; color:#065f46;}
+    .notice.info{border-color:#93c5fd; background:#eff6ff; color:var(--info);}
+    .session-info {
+      background: #f8fafc; border: 1px solid var(--line); border-radius: 12px;
+      padding: 16px; margin-top: 10px;
+    }
+    .session-info p { margin: 0 0 8px 0; font-size: 1rem; }
+    .session-info span { font-weight: 600; color: var(--brand); }
+    .spinner{
+      width:16px; height:16px; border-radius:50%;
+      border:2px solid rgba(255,255,255,.55);
+      border-right-color:transparent;
+      animation:spin .6s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    footer{
+      text-align:center; padding:20px; color:var(--muted); font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
 
-  <header class="page-header">
-    <div class="wrap">
-      <img src="sngr.png" alt="SNGR" class="logo"> 
-      <div class="h-txt">
-        <h1>SNGR – Registro de Capacitación</h1>
-        <p>Programa “Jóvenes en Acción” · Uso interno</p>
-      </div>
-    </div>
-  </header>
+  <header class="page-header">
+    <div class="wrap">
+      <img src="sngr.png" alt="SNGR" class="logo"> 
+      <div class="h-txt">
+        <h1>SNGR – Registro de Capacitación</h1>
+        <p>Programa “Jóvenes en Acción” · Uso interno</p>
+      </div>
+    </div>
+  </header>
 
-  <main>
-    <section class="card" role="region" aria-labelledby="t">
-      <div class="card-head">
-        <h2 id="t">Formulario de Capacitación</h2>
-        <p>Verifica tu cédula para registrar tu asistencia. Solo podrás registrarte en el horario habilitado.</p>
-      </div>
+  <main>
+    <section class="card" role="region" aria-labelledby="t">
+      <div class="card-head">
+        <h2 id="t">Formulario de Capacitación</h2>
+        <p>Verifica tu cédula para registrar tu asistencia. Solo podrás registrarte en el horario habilitado.</p>
+      </div>
 
-      <div class="card-body">
-        <form id="frm" class="grid" novalidate>
-          
-          <div class="full">
-            <label for="cedula">Cédula *</label>
-            <div class="id-row">
-              <input id="cedula" class="input" type="text" inputmode="numeric" placeholder="Ej.: 1753631652" required>
-              <button type="button" id="btn-verificar" class="btn btn-primary" aria-label="Verificar cédula">
-                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="11" cy="11" r="7" stroke-width="2"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line>
-                </svg>
-                Verificar
-              </button>
-              <span id="badge-estado" class="badge" hidden></span>
-            </div>
-            <div class="helper">Solo números – 10 dígitos.</div>
-          </div>
+      <div class="card-body">
+        <form id="frm" class="grid" novalidate>
+          
+          <div class="full">
+            <label for="cedula">Cédula *</label>
+            <div class="id-row">
+              <input id="cedula" class="input" type="text" inputmode="numeric" placeholder="Ej.: 1753631652" required>
+              <button type="button" id="btn-verificar" class="btn btn-primary" aria-label="Verificar cédula">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="7" stroke-width="2"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line>
+                </svg>
+                Verificar
+              </button>
+              <span id="badge-estado" class="badge" hidden></span>
+            </div>
+            <div class="helper">Solo números – 10 dígitos.</div>
+          </div>
 
-          <div id="ident-existente" class="full" hidden>
-            <div class="row">
-              <div>
-                <label for="apellidos_ro">Apellidos</label>
-                <input id="apellidos_ro" class="input" type="text" readonly>
-              </div>
-              <div>
-                <label for="nombres_ro">Nombres</label>
-                <input id="nombres_ro" class="input" type="text" readonly>
-              </div>
-            </div>
-          </div>
+          <div id="ident-existente" class="full" hidden>
+            <div class="row">
+              <div>
+                <label for="apellidos_ro">Apellidos</label>
+          _ro" class="input" type="text" readonly>
+              </div>
+              <div>
+                <label for="nombres_ro">Nombres</label>
+                <input id="nombres_ro" class="input" type="text" readonly>
+              </div>
+            </div>
+          </div>
 
-          <div id="bloque-no-encontrado" class="full" hidden>
-            <div class="notice err">
-              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9" stroke-width="2"></circle><line x1="12" y1="12" x2="16" y2="16" stroke-width="2"></line><line x1="12" y1="12" x2="8" y2="8" stroke-width="2"></line><line x1="16" y1="8" x2="8" y2="16" stroke-width="2"></line></svg>
-              <div><strong>No estás registrado/a.</strong> No podemos encontrar tu cédula en la base de datos de participantes.</div>
-            </div>
-          </div>
-          
-          <div id="bloque-mensaje" class="full" hidden></div>
+          <div id="bloque-no-encontrado" class="full" hidden>
+            <div class="notice err">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9" stroke-width="2"></circle><line x1="12" y1="12" x2="16" y2="16" stroke-width="2"></line><line x1="12" y1="12" x2="8" y2="8" stroke-width="2"></line><line x1="16" y1="8" x2="8" y2="16" stroke-width="2"></line></svg>
+              <div><strong>No estás registrado/a.</strong> No podemos encontrar tu cédula en la base de datos de participantes.</div>
+            </div>
+          </div>
+          
+          <div id="bloque-mensaje" class="full" hidden></div>
 
-          <div id="bloque-registro" class="full" style="display:none; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 20px;">
-            <div class="session-info">
-              <p>Tu sesión habilitada es:</p>
-              <p>Modalidad: <span id="info-modalidad"></span></p>
-              <p>Horario: <span id="info-horario"></span></p>
-            </div>
-            
-            <button type="submit" id="btn-registrar" class="btn btn-primary" style="margin-top: 20px;">
-              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6L9 17l-5-5" stroke-width="2"></path></svg>
-              Registrar mi Asistencia
-            </button>
-          </div>
-          
-        </form>
-      </div>
-    </section>
-  </main>
+          <div id="bloque-registro" class="full" style="display:none; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 20px;">
+            <div class="session-info">
+              <p>Tu sesión habilitada es:</p>
+              <p>Modalidad: <span id="info-modalidad"></span></p>
+              <p>Horario: <span id="info-horario"></span></p>
+            </div>
+            
+            <button type="submit" id="btn-registrar" class="btn btn-primary" style="margin-top: 20px;">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6L9 17l-5-5" stroke-width="2"></path></svg>
+              Registrar mi Asistencia
+            </button>
+          </div>
+          
+        </form>
+      </div>
+    </section>
+  </main>
 
-  <footer>© 2025 SNGR – Coordinación Zonal 5-8 · Uso interno</footer>
+  <footer>© 2025 SNGR – Coordinación Zonal 5-8 · Uso interno</footer>
 
-  <script>
-    // API del Worker (tu URL) — ya proporcionada
-    const API_URL = "https://tight-breeze-c893.dylanvillasagua.workers.dev/";
+  <script>
+    // API del Worker (tu URL) — ya proporcionada
+    const API_URL = "https://tight-breeze-c893.dylanvillasagua.workers.dev/";
 
-    // --- ELEMENTOS DEL DOM ---
-    const cedulaInput = document.getElementById('cedula');
-    const btnVerificar = document.getElementById('btn-verificar');
-    const badgeEstado = document.getElementById('badge-estado');
-    
-    const identExistente = document.getElementById('ident-existente');
-    const bloqueNoEncontrado = document.getElementById('bloque-no-encontrado');
-    const bloqueMensaje = document.getElementById('bloque-mensaje');
-    const bloqueRegistro = document.getElementById('bloque-registro');
-    const btnRegistrar = document.getElementById('btn-registrar');
+    // --- ELEMENTOS DEL DOM ---
+    const cedulaInput = document.getElementById('cedula');
+    const btnVerificar = document.getElementById('btn-verificar');
+    const badgeEstado = document.getElementById('badge-estado');
+    
+    const identExistente = document.getElementById('ident-existente');
+    const bloqueNoEncontrado = document.getElementById('bloque-no-encontrado');
+    const bloqueMensaje = document.getElementById('bloque-mensaje');
+    const bloqueRegistro = document.getElementById('bloque-registro');
+    const btnRegistrar = document.getElementById('btn-registrar');
 
-    function showMensaje(msg, type = 'info') {
-      bloqueMensaje.textContent = msg;
-      bloqueMensaje.className = `full notice ${type}`; 
-      bloqueMensaje.hidden = false;
-    }
+    function showMensaje(msg, type = 'info') {
+      bloqueMensaje.innerHTML = msg; // Usar innerHTML por si acaso (aunque textContent es más seguro)
+      bloqueMensaje.className = `full notice ${type}`; 
+      bloqueMensaje.hidden = false;
+    }
 
-    function ocultarBloques() {
-      identExistente.hidden = true;
-      bloqueNoEncontrado.hidden = true;
-      bloqueMensaje.hidden = true;
-      bloqueRegistro.style.display = 'none';
-      badgeEstado.hidden = true;
-    }
+    function ocultarBloques() {
+      identExistente.hidden = true;
+      bloqueNoEncontrado.hidden = true;
+      bloqueMensaje.hidden = true;
+      bloqueRegistro.style.display = 'none';
+      badgeEstado.hidden = true;
+    }
 
-    function validarHorario(fechaStr, horaInicioStr, horaFinStr) {
-      try {
-        if (!fechaStr || !horaInicioStr || !horaFinStr) {
-          console.warn("Faltan datos de horario, se permite el registro.");
-          return { ok: true, msg: "Horario no definido" };
-        }
+    function validarHorario(fechaStr, horaInicioStr, horaFinStr) {
+      try {
+        if (!fechaStr || !horaInicioStr || !horaFinStr) {
+          console.warn("Faltan datos de horario, se permite el registro.");
+          return { ok: true, msg: "Horario no definido" };
+        }
 
-        const ahora = new Date();
+        const ahora = new Date();
 
-        const [y, m, d] = fechaStr.split('-').map(Number);
-        const [hi, mi] = horaInicioStr.split(':').map(Number);
-        const [hf, mf] = horaFinStr.split(':').map(Number);
+        const [y, m, d] = fechaStr.split('-').map(Number);
+        const [hi, mi] = horaInicioStr.split(':').map(Number);
+        const [hf, mf] = horaFinStr.split(':').map(Number);
 
-        const inicio = new Date(y, m - 1, d, hi, mi, 0);
-        const fin = new Date(y, m - 1, d, hf, mf, 0);
-        
-        if (ahora < inicio) {
-          return { ok: false, msg: `El registro aún no está abierto. Se habilita a las ${horaInicioStr} del ${fechaStr}.` };
-        }
-        if (ahora > fin) {
-          return { ok: false, msg: `El tiempo de registro para esta sesión ha terminado (finalizó a las ${horaFinStr}).` };
-        }
-        
-        return { ok: true };
+        const inicio = new Date(y, m - 1, d, hi, mi, 0);
+        const fin = new Date(y, m - 1, d, hf, mf, 0);
+        
+        if (ahora < inicio) {
+          return { ok: false, msg: `El registro aún no está abierto. Se habilita a las ${horaInicioStr} del ${fechaStr}.` };
+        }
+        if (ahora > fin) {
+          return { ok: false, msg: `El tiempo de registro para esta sesión ha terminado (finalizó a las ${horaFinStr}).` };
+        }
+        
+        return { ok: true };
 
-      } catch (e) {
-        console.error("Error al validar horario:", e);
-        return { ok: true, msg: "No se pudo validar el horario, se permite el registro." };
-      }
-    }
+      } catch (e) {
+        console.error("Error al validar horario:", e);
+        return { ok: true, msg: "No se pudo validar el horario, se permite el registro." };
+      }
+    }
 
-    // utility: post form-url-encoded (Worker espera form-url-encoded)
-    async function apiPost(params) {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: params
-      });
-      if (!res.ok) throw new Error('Error de red: ' + res.status);
-      return res.json();
-    }
+    // utility: post (Worker espera form-url-encoded)
+    async function apiPost(params) {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: params
+      });
+      if (!res.ok) throw new Error('Error de red: ' + res.status);
+      return res.json();
+    }
 
-    // --- VERIFICAR CÉDULA ---
-    btnVerificar.addEventListener('click', async () => {
-      ocultarBloques(); 
-      const cedula = cedulaInput.value.trim();
-      if (cedula.length !== 10) {
-        showMensaje('La cédula debe tener 10 dígitos.', 'err');
-        return;
-      }
+    // --- VERIFICAR CÉDULA ---
+    btnVerificar.addEventListener('click', async () => {
+      ocultarBloques(); 
+      const cedula = cedulaInput.value.trim();
+      if (cedula.length !== 10) {
+        showMensaje('La cédula debe tener 10 dígitos.', 'err');
+        return;
+      }
 
-      const originalBtnHTML = btnVerificar.innerHTML;
-      btnVerificar.disabled = true;
-      cedulaInput.disabled = true;
-      btnVerificar.innerHTML = '<span class="spinner"></span> Verificando...';
+      const originalBtnHTML = btnVerificar.innerHTML;
+      btnVerificar.disabled = true;
+      cedulaInput.disabled = true;
+      btnVerificar.innerHTML = '<span class="spinner"></span> Verificando...';
 
-      try {
-        const params = new URLSearchParams();
-        params.append('action', 'verificarCedula');
-        params.append('cedula', cedula);
+      try {
+        const params = new URLSearchParams();
+        params.append('action', 'verificarCedula');
+        params.append('cedula', cedula);
 
-        const data = await apiPost(params);
+        const data = await apiPost(params);
 
-        if (data.found) {
-          identExistente.hidden = false;
-          document.getElementById('apellidos_ro').value = data.apellidos || '';
-          document.getElementById('nombres_ro').value = data.nombres || '';
-          badgeEstado.hidden = false;
+        if (data.found) {
+          identExistente.hidden = false;
+          document.getElementById('apellidos_ro').value = data.apellidos || '';
+          document.getElementById('nombres_ro').value = data.nombres || '';
+          badgeEstado.hidden = false;
 
-          const estadoAsistencia = (data.estado_asistencia || 'PENDIENTE').toUpperCase();
+          const estadoAsistencia = (data.estado_asistencia || 'PENDIENTE').toUpperCase();
 
-          if (estadoAsistencia === 'ASISTIÓ' || estadoAsistencia === 'REGISTRADO') {
-            badgeEstado.textContent = 'Asistencia Registrada';
-            badgeEstado.className = 'badge ok';
-            showMensaje('¡Ya has registrado tu asistencia para esta sesión!', 'ok');
+          if (estadoAsistencia === 'ASISTIÓ' || estadoAsistencia === 'REGISTRADO') {
+            badgeEstado.textContent = 'Asistencia Registrada';
+  MERO 'badge ok';
+            showMensaje('¡Ya has registrado tu asistencia para esta sesión!', 'ok');
 
-          } else if (estadoAsistencia === 'HABILITADO') {
+          } else if (estadoAsistencia === 'HABILITADO') {
 
-            badgeEstado.textContent = 'Habilitado';
-            badgeEstado.className = 'badge ok';
+            badgeEstado.textContent = 'Habilitado';
+            badgeEstado.className = 'badge ok';
 
-            const horario = validarHorario(data.fecha, data.horaInicio, data.horaFin);
+            const horario = validarHorario(data.fecha, data.horaInicio, data.horaFin);
 
-            if (horario.ok) {
-              bloqueRegistro.style.display = 'block';
-              document.getElementById('info-modalidad').textContent = data.modalidad;
-              document.getElementById('info-horario').textContent = `${data.horaInicio} - ${data.horaFin} del ${data.fecha}`;
-            } else {
-              showMensaje(horario.msg, 'info');
-            }
+            if (horario.ok) {
+              bloqueRegistro.style.display = 'block';
+              document.getElementById('info-modalidad').textContent = data.modalidad;
+              document.getElementById('info-horario').textContent = `${data.horaInicio} - ${data.horaFin} del ${data.fecha}`;
+            } else {
+              showMensaje(horario.msg, 'info');
+            }
 
-          } else {
-            badgeEstado.textContent = 'No Habilitado';
-            badgeEstado.className = 'badge err';
-            showMensaje('Aún no estás habilitado para registrar asistencia. Contacta a tu coordinador.', 'info');
-          }
+          } else {
+            badgeEstado.textContent = 'No Habilitado';
+            badgeEstado.className = 'badge err';
+            showMensaje('Aún no estás habilitado para registrar asistencia. Contacta a tu coordinador.', 'info');
+          }
 
-        } else {
-          bloqueNoEncontrado.hidden = false;
-          badgeEstado.hidden = true;
-          showMensaje('No encontramos tu cédula en la base de datos.', 'err');
-        }
+        } else {
+          bloqueNoEncontrado.hidden = false;
+          badgeEstado.hidden = true;
+          showMensaje('No encontramos tu cédula en la base de datos.', 'err');
+        }
 
-      } catch (err) {
-        console.error('Error capturado:', err);
-        showMensaje('Error de conexión. Revisa tu internet e intenta nuevamente.', 'err');
+      } catch (err) {
+        console.error('Error capturado:', err);
+        showMensaje('Error de conexión. Revisa tu internet e intenta nuevamente.', 'err');
 
-      } finally {
-        btnVerificar.disabled = false;
-        cedulaInput.disabled = false;
-        btnVerificar.innerHTML = originalBtnHTML;
-      }
-    });
+      } finally {
+        btnVerificar.disabled = false;
+        cedulaInput.disabled = false;
+        btnVerificar.innerHTML = originalBtnHTML;
+      }
+    });
 
-    // --- REGISTRAR ASISTENCIA ---
-    document.getElementById('frm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const originalBtnHTML = btnRegistrar.innerHTML;
-      btnRegistrar.disabled = true;
-      btnRegistrar.innerHTML = '<span class="spinner"></span> Registrando...';
-      
-      try {
-        const params = new URLSearchParams();
-        params.append('action', 'registrarAsistencia');
-        params.append('cedula', cedulaInput.value.trim());
+    // --- REGISTRAR ASISTENCIA (SECCIÓN ACTUALIZADA) ---
+    document.getElementById('frm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const originalBtnHTML = btnRegistrar.innerHTML;
+      btnRegistrar.disabled = true;
+      btnRegistrar.innerHTML = '<span class="spinner"></span> Registrando...';
+      
+      let registrationSuccessful = false; // Bandera para el 'finally'
 
-        const res = await fetch(API_URL, { method: 'POST', body: params });
-        const data = await res.json();
+      try {
+        const params = new URLSearchParams();
+        params.append('action', 'registrarAsistencia');
+        params.append('cedula', cedulaInput.value.trim());
 
-        if (data.success) {
-          ocultarBloques();
-          identExistente.hidden = false;
+        //         const data = await apiPost(params);
 
-          badgeEstado.textContent = 'Asistencia Registrada';
-          badgeEstado.className = 'badge ok';
-          showMensaje('¡Asistencia registrada con éxito!', 'ok');
+        if (data.success) {
+          ocultarBloques();
+          identExistente.hidden = false;
 
-        } else {
-          showMensaje(data.message || 'Error desconocido.', 'err');
-          btnRegistrar.disabled = false;
-          btnRegistrar.innerHTML = originalBtnHTML;
-        }
-        
-      } catch(err) {
-        console.error(err);
-        showMensaje('Error de conexión. No se pudo registrar.', 'err');
-        btnRegistrar.disabled = false;
-        btnRegistrar.innerHTML = originalBtnHTML;
-      }
-    });
-  </script>
+          badgeEstado.textContent = 'Asistencia Registrada';
+          badgeEstado.className = 'badge ok';
+          showMensaje('¡Asistencia registrada con éxito!', 'ok');
+          registrationSuccessful = true; // Marcamos como exitoso
+
+        } else {
+          // Si la API devuelve 'success: false', lanzamos un error
+          // para ser atrapado por el bloque 'catch'
+          throw new Error(data.message || 'Error desconocido al registrar.');
+        }
+        
+      } catch(err) {
+        console.error(err);
+        // El 'catch' ahora maneja errores de red Y errores de la API
+        showMensaje(err.message, 'err');
+      } finally {
+        //         if (!registrationSuccessful) {
+          btnRegistrar.disabled = false;
+          btnRegistrar.innerHTML = originalBtnHTML;
+        }
+      }
+    });
+  </script>
 </body>
 </html>
