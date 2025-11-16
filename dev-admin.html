@@ -26,6 +26,7 @@
     .badge{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#f8fafc}
     .ok{color:#065f46;background:#ecfdf5;border-color:#86efac}
     .err{color:#7f1d1d;background:#fef2f2;border-color:#fecaca}
+    .login{display:flex;gap:8px;align-items:center}
   </style>
 </head>
 <body>
@@ -43,82 +44,105 @@
         <div class="small">Habilita participantes de forma individual o masiva</div>
       </div>
       <div style="width:320px">
-        <input id="admin-key" type="text" placeholder="ADMIN KEY (temporal)" />
+        <!-- LOGIN -->
+        <div class="login">
+          <input id="adminKey" type="password" placeholder="ADMIN KEY (obligatorio)" />
+          <button id="btn-login">Entrar</button>
+        </div>
       </div>
     </div>
 
     <hr style="margin:12px 0">
 
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:12px">
-      <div>
-        <div class="row">
-          <input id="search-cedula" type="text" placeholder="Buscar por cédula..." />
-          <button id="btn-search">Buscar</button>
-          <button id="btn-refresh">Refrescar lista</button>
+    <div id="panel" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:12px">
+        <div>
+          <div class="row">
+            <input id="searchCed" type="text" placeholder="Buscar por cédula..." />
+            <button id="btn-search">Buscar</button>
+            <button id="btn-refresh">Refrescar</button>
+          </div>
+
+          <div class="row">
+            <button id="btn-enable-selected">Habilitar seleccionados</button>
+            <button id="btn-disable-selected">Deshabilitar seleccionados</button>
+          </div>
+
+          <div id="table-wrap" class="card" style="margin-top:10px">
+            <table id="tbl">
+              <thead><tr><th><input id="chk-all" type="checkbox"></th><th>Cédula</th><th>Apellidos</th><th>Nombres</th><th>Estado</th><th>Acción</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="row">
-          <button id="btn-enable-selected">Habilitar seleccionados</button>
-          <button id="btn-disable-selected">Deshabilitar seleccionados</button>
-        </div>
+        <div>
+          <div class="small">Carga masiva (CSV)</div>
+          <textarea id="csvArea" rows="10" placeholder="cedula,apellidos,nombres,modalidad,fecha,horaInicio,horaFin"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="btn-upload">Cargar CSV</button>
+            <button id="btn-clear">Limpiar</button>
+          </div>
 
-        <div id="table-wrap" style="margin-top:10px" class="card">
-          <table id="tbl">
-            <thead><tr><th><input id="chk-all" type="checkbox"></th><th>Cédula</th><th>Apellidos</th><th>Nombres</th><th>Estado</th><th>Acción</th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <hr style="margin:12px 0">
+          <div class="small">Resultados</div>
+          <div id="adminMsg" class="card" style="margin-top:8px;min-height:80px"></div>
         </div>
-      </div>
-
-      <div>
-        <div class="small">Carga masiva (CSV)</div>
-        <textarea id="csv-area" rows="10" placeholder="cedula,apellidos,nombres,modalidad,fecha,horaInicio,horaFin"></textarea>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button id="btn-upload">Cargar CSV</button>
-          <button id="btn-clear">Limpiar</button>
-        </div>
-
-        <hr style="margin:12px 0">
-        <div class="small">Resultados</div>
-        <div id="admin-msg" class="card" style="margin-top:8px;min-height:80px"></div>
       </div>
     </div>
+
   </div>
 </div>
 
 <script>
-/* CONFIG: pega aquí la URL del Worker tras desplegar */
-const API_URL = "<PON_AQUI_LA_URL_DE_TU_WORKER>";
-// Nota: admin usa ADMIN_KEY header. Para pruebas pega la misma clave que defines al desplegar el Worker.
-function getAdminKey() { return document.getElementById('admin-key').value.trim(); }
+const API_URL = "https://tight-breeze-c893.dylanvillasagua.workers.dev/";
 
-const tblBody = document.querySelector('#tbl tbody');
-const adminMsg = document.getElementById('admin-msg');
-
-function showAdmin(text, type='') {
-  adminMsg.textContent = text;
-  adminMsg.className = 'card ' + (type || '');
+// Helpers
+function adminKey() { return document.getElementById('adminKey').value.trim(); }
+function setAdminMsg(txt, err) {
+  const el = document.getElementById('adminMsg');
+  el.textContent = txt;
+  el.style.color = err ? '#7f1d1d' : '#065f46';
 }
 
-async function apiAdmin(action, payload = {}) {
-  const form = new URLSearchParams();
-  form.append('action', action);
-  for (const k in payload) form.append(k, payload[k]);
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Accept': 'application/json', 'x-admin-key': getAdminKey() },
-    body: form
-  });
-  if (!res.ok) throw new Error('Error de red ' + res.status);
+// Generic POST to worker with admin header when provided
+async function workerPost(form) {
+  const headers = { 'Accept': 'application/json' };
+  const key = adminKey();
+  if (key) headers['x-admin-key'] = key;
+  const res = await fetch(API_URL, { method:'POST', headers, body: form });
+  if (!res.ok) throw new Error('Error ' + res.status);
   return res.json();
 }
 
+// UI actions
+document.getElementById('btn-login').addEventListener('click', () => {
+  const key = adminKey();
+  if (!key) { alert('Ingresa ADMIN KEY'); return; }
+  // intentamos una llamada simple para validar
+  const form = new URLSearchParams();
+  form.append('action','listarParticipantes');
+  workerPost(form).then(()=> {
+    document.getElementById('panel').style.display = 'block';
+    setAdminMsg('Acceso correcto. Cargando lista...');
+    loadList('');
+  }).catch(e=>{
+    alert('Clave inválida o error: ' + e.message);
+  });
+});
+
+const tblBody = document.querySelector('#tbl tbody');
+
 async function loadList(q='') {
   try {
-    showAdmin('Cargando lista...');
-    const data = await apiAdmin('listarParticipantes', { q });
+    setAdminMsg('Cargando...');
+    const form = new URLSearchParams();
+    form.append('action','listarParticipantes');
+    form.append('q', q);
+    const data = await workerPost(form);
+    const list = data.list || [];
     tblBody.innerHTML = '';
-    (data.list || []).forEach(p => {
+    list.forEach(p => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><input type="checkbox" data-ced="${p.cedula}"></td>
@@ -126,80 +150,82 @@ async function loadList(q='') {
         <td>${p.apellidos || ''}</td>
         <td>${p.nombres || ''}</td>
         <td><span class="badge ${p.estado_asistencia === 'HABILITADO' ? 'ok':'err'}">${p.estado_asistencia || 'PENDIENTE'}</span></td>
-        <td>
-          <button data-action="toggle" data-ced="${p.cedula}">${p.estado_asistencia === 'HABILITADO' ? 'Deshabilitar' : 'Habilitar'}</button>
-        </td>
+        <td><button data-ced="${p.cedula}" class="btn-action">${p.estado_asistencia === 'HABILITADO' ? 'Deshabilitar' : 'Habilitar'}</button></td>
       `;
       tblBody.appendChild(tr);
     });
-    showAdmin('Lista cargada. Total: ' + (data.list?.length||0));
+    setAdminMsg('Lista cargada. Total: ' + list.length);
   } catch (e) {
     console.error(e);
-    showAdmin('Error cargando lista: ' + e.message, 'err');
+    setAdminMsg('Error: ' + e.message, true);
   }
 }
 
-document.getElementById('btn-refresh').addEventListener('click', ()=>loadList(''));
-document.getElementById('btn-search').addEventListener('click', ()=>loadList(document.getElementById('search-cedula').value.trim()));
+document.getElementById('btn-refresh').addEventListener('click', ()=> loadList(''));
+document.getElementById('btn-search').addEventListener('click', ()=> loadList(document.getElementById('searchCed').value.trim()));
 
 document.getElementById('table-wrap').addEventListener('click', async (ev) => {
-  const btn = ev.target.closest('button[data-action="toggle"]');
+  const btn = ev.target.closest('.btn-action');
   if (!btn) return;
   const ced = btn.dataset.ced;
   try {
-    showAdmin('Procesando...');
-    const res = await apiAdmin('toggleHabilitar', { cedula: ced });
-    showAdmin(res.message || 'Operación completada');
-    await loadList('');
-  } catch (e) {
-    showAdmin('Error: ' + e.message, 'err');
-  }
+    setAdminMsg('Procesando...');
+    const form = new URLSearchParams();
+    form.append('action','toggleHabilitar');
+    form.append('cedula', ced);
+    const res = await workerPost(form);
+    setAdminMsg(res.message || 'OK');
+    loadList('');
+  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
 });
 
 document.getElementById('btn-upload').addEventListener('click', async () => {
-  const txt = document.getElementById('csv-area').value.trim();
-  if (!txt) return showAdmin('No hay datos para cargar', 'err');
+  const txt = document.getElementById('csvArea').value.trim();
+  if (!txt) return setAdminMsg('No hay datos', true);
   try {
-    showAdmin('Enviando carga masiva...');
-    const res = await apiAdmin('cargaMasiva', { csv: txt });
-    showAdmin('Carga completa. Procesados: ' + (res.processed || 0) + '. Agregados: ' + (res.added || 0));
-    await loadList('');
-  } catch (e) {
-    showAdmin('Error carga: ' + e.message, 'err');
-  }
-});
-
-document.getElementById('btn-clear').addEventListener('click', ()=>{ document.getElementById('csv-area').value = ''; });
-
-document.getElementById('chk-all').addEventListener('change', (e)=>{
-  const checks = document.querySelectorAll('#tbl tbody input[type="checkbox"]');
-  checks.forEach(c=>c.checked = e.target.checked);
-});
-
-document.getElementById('btn-enable-selected').addEventListener('click', async ()=>{
-  const ceds = Array.from(document.querySelectorAll('#tbl tbody input[type="checkbox"]:checked')).map(i=>i.dataset.ced);
-  if (!ceds.length) return showAdmin('No hay seleccionados', 'err');
-  try {
-    showAdmin('Habilitando ...');
-    const res = await apiAdmin('habilitarMultiple', { cedulas: ceds.join(',') });
-    showAdmin(res.message || 'Operación finalizada');
+    setAdminMsg('Enviando...');
+    const form = new URLSearchParams();
+    form.append('action','cargaMasiva');
+    form.append('csv', txt);
+    const res = await workerPost(form);
+    setAdminMsg('Procesados: ' + (res.processed||0) + '. Agregados: ' + (res.added||0));
     loadList('');
-  } catch (e) { showAdmin('Error: ' + e.message, 'err'); }
+  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
 });
 
-document.getElementById('btn-disable-selected').addEventListener('click', async ()=>{
+document.getElementById('btn-clear').addEventListener('click', ()=> document.getElementById('csvArea').value='');
+
+document.getElementById('chk-all').addEventListener('change', (e) => {
+  document.querySelectorAll('#tbl tbody input[type="checkbox"]').forEach(c => c.checked = e.target.checked);
+});
+
+document.getElementById('btn-enable-selected').addEventListener('click', async () => {
   const ceds = Array.from(document.querySelectorAll('#tbl tbody input[type="checkbox"]:checked')).map(i=>i.dataset.ced);
-  if (!ceds.length) return showAdmin('No hay seleccionados', 'err');
+  if (!ceds.length) return setAdminMsg('No hay seleccionados', true);
   try {
-    showAdmin('Deshabilitando ...');
-    const res = await apiAdmin('deshabilitarMultiple', { cedulas: ceds.join(',') });
-    showAdmin(res.message || 'Operación finalizada');
+    setAdminMsg('Habilitando...');
+    const form = new URLSearchParams();
+    form.append('action','habilitarMultiple');
+    form.append('cedulas', ceds.join(','));
+    const res = await workerPost(form);
+    setAdminMsg(res.message || 'OK');
     loadList('');
-  } catch (e) { showAdmin('Error: ' + e.message, 'err'); }
+  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
 });
 
-// carga inicial
-loadList('');
+document.getElementById('btn-disable-selected').addEventListener('click', async () => {
+  const ceds = Array.from(document.querySelectorAll('#tbl tbody input[type="checkbox"]:checked')).map(i=>i.dataset.ced);
+  if (!ceds.length) return setAdminMsg('No hay seleccionados', true);
+  try {
+    setAdminMsg('Deshabilitando...');
+    const form = new URLSearchParams();
+    form.append('action','deshabilitarMultiple');
+    form.append('cedulas', ceds.join(','));
+    const res = await workerPost(form);
+    setAdminMsg(res.message || 'OK');
+    loadList('');
+  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
+});
 </script>
 </body>
 </html>
