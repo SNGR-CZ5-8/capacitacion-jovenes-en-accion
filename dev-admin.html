@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ESTILOS CSS COMPLETOS PARA EL PANEL */
+    /* ESTILOS CSS COMPLETOS Y BONITOS */
     :root{
       --brand:#2F338F; --brand-600:#242870; --bg:#f4f6fb; --card:#fff; --muted:#6b7280; --line:#e5e7eb; --radius:14px;
       --ok:#065f46; --err:#7f1d1d;
@@ -93,6 +93,7 @@
           <div class="small">Resultados</div>
           <div id="adminMsg" class="card status-msg" style="margin-top:8px;min-height:80px"></div>
         </div>
+        
       </div>
     </div>
 
@@ -103,7 +104,7 @@
 // ==========================================
 // ⚠️ IMPORTANTE: PEGA AQUÍ TU URL DEL WEB APP
 // ==========================================
-const API_URL = "https://script.google.com/macros/s/TU_SCRIPT_ID_AQUI/exec";
+const API_URL = "https://yellow-cherry-162f.dylanvillasagua.workers.dev/";
 
 // Elementos UI
 const tblBody = document.querySelector('#tbl tbody');
@@ -121,7 +122,7 @@ async function workerPost(data) {
   const headers = { 'Content-Type': 'application/json' }; 
   const key = adminKey();
   
-  // Envía la clave de administración en el encabezado
+  // Envía la clave de administración en el encabezado (requerido por Code.gs)
   if (key) headers['X-Admin-Key'] = key; 
   
   const res = await fetch(API_URL, { 
@@ -130,6 +131,8 @@ async function workerPost(data) {
     body: JSON.stringify(data) // Enviamos el objeto de acción como JSON
   });
   
+  // Manejar el error 403 de Apps Script (Acceso Denegado)
+  if (res.status === 403) throw new Error('Error 403: Clave de administrador inválida.');
   if (!res.ok) throw new Error('Error ' + res.status);
   return res.json();
 }
@@ -145,11 +148,11 @@ document.getElementById('btn-login').addEventListener('click', () => {
   // Intenta listar para validar la clave
   const data = { action: 'listarParticipantes' };
   workerPost(data).then(()=> {
-    document.getElementById('panel').style.display = 'block';
+    document.getElementById('panel').style.display = 'grid'; // Muestra el panel
     setAdminMsg('Acceso correcto. Cargando lista...');
     loadList('');
   }).catch(e=>{
-    setAdminMsg('Clave inválida o error: ' + e.message, true);
+    setAdminMsg(e.message || 'Error de conexión/servidor.', true);
   });
 });
 
@@ -204,11 +207,10 @@ document.getElementById('table-wrap').addEventListener('click', async (ev) => {
   const ced = btn.dataset.ced;
   try {
     setAdminMsg('Procesando...');
-    // Usa toggleHabilitar en el backend
     const data = { action: 'toggleHabilitar', cedula: ced };
     const res = await workerPost(data);
     setAdminMsg(res.message || 'OK');
-    loadList(''); // Recarga la lista
+    loadList(''); 
   } catch (e) { setAdminMsg('Error: ' + e.message, true); }
 });
 
