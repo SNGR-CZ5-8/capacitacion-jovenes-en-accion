@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ESTILOS CSS COMPLETOS PARA EL PANEL */
     :root{
       --brand:#2F338F; --brand-600:#242870; --bg:#f4f6fb; --card:#fff; --muted:#6b7280; --line:#e5e7eb; --radius:14px;
       --ok:#065f46; --err:#7f1d1d;
@@ -102,7 +103,7 @@
 // ==========================================
 // ⚠️ IMPORTANTE: PEGA AQUÍ TU URL DEL WEB APP
 // ==========================================
-const API_URL = "https://yellow-cherry-162f.dylanvillasagua.workers.dev/";
+const API_URL = "https://script.google.com/macros/s/TU_SCRIPT_ID_AQUI/exec";
 
 // Elementos UI
 const tblBody = document.querySelector('#tbl tbody');
@@ -115,12 +116,12 @@ function setAdminMsg(txt, isError) {
   adminMsgEl.className = `card status-msg ${isError ? 'status-err' : 'status-ok'}`;
 }
 
-// Generic POST function (sends JSON body, as expected by Code.gs doPost)
+// Generic POST function (sends JSON body and Admin Key header)
 async function workerPost(data) {
   const headers = { 'Content-Type': 'application/json' }; 
   const key = adminKey();
   
-  // Usamos el header X-Admin-Key para un control de acceso (debes implementarlo en tu Code.gs)
+  // Envía la clave de administración en el encabezado
   if (key) headers['X-Admin-Key'] = key; 
   
   const res = await fetch(API_URL, { 
@@ -141,7 +142,7 @@ document.getElementById('btn-login').addEventListener('click', () => {
   const key = adminKey();
   if (!key) { setAdminMsg('Ingresa ADMIN KEY', true); return; }
   
-  // Intenta listar para validar la clave (asume que la clave debe validarse en el servidor)
+  // Intenta listar para validar la clave
   const data = { action: 'listarParticipantes' };
   workerPost(data).then(()=> {
     document.getElementById('panel').style.display = 'block';
@@ -156,17 +157,16 @@ async function loadList(q='') {
   try {
     setAdminMsg('Cargando...');
     
-    // La búsqueda por 'q' no está implementada en Apps Script, pero listamos todo
     const data = { action: 'listarParticipantes' };
     const res = await workerPost(data);
     
-    const list = res.list || res; // Maneja si el resultado es {list: []} o solo el array []
+    const list = res.list || res; 
     tblBody.innerHTML = '';
     
     list.forEach(p => {
-      // Basamos la visualización en p.habilitado (Col J) y p.estado_asistencia (Col K)
-      const isHabilitado = p.habilitado === 'SI';
-      const isAsistio = p.estado_asistencia === 'ASISTIÓ';
+      
+      const isHabilitado = p.habilitado === 'SI'; // Control Admin (Col J)
+      const isAsistio = p.estado_asistencia === 'ASISTIÓ'; // Estado final (Col K)
       
       let badgeClass = 'err';
       let badgeText = 'NO HABILITADO';
@@ -204,11 +204,11 @@ document.getElementById('table-wrap').addEventListener('click', async (ev) => {
   const ced = btn.dataset.ced;
   try {
     setAdminMsg('Procesando...');
-    // Llama a la nueva función de toggle en Code.gs
+    // Usa toggleHabilitar en el backend
     const data = { action: 'toggleHabilitar', cedula: ced };
     const res = await workerPost(data);
     setAdminMsg(res.message || 'OK');
-    loadList(''); // Recarga la lista para actualizar el estado
+    loadList(''); // Recarga la lista
   } catch (e) { setAdminMsg('Error: ' + e.message, true); }
 });
 
