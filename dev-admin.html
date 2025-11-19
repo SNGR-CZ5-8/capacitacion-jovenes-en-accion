@@ -1,231 +1,261 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SNGR · Panel Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --brand:#2F338F; --brand-600:#242870; --bg:#f4f6fb; --card:#fff; --muted:#6b7280; --line:#e5e7eb; --radius:14px;
-    }
-    *{box-sizing:border-box}
-    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; margin:0; background:var(--bg); color:#1f2937}
-    header{background:linear-gradient(180deg,var(--brand),var(--brand-600)); color:#fff; padding:18px}
-    .wrap{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px}
-    .container{max-width:980px;margin:20px auto;padding:16px}
-    .card{background:var(--card); border-radius:12px; padding:16px; box-shadow:0 10px 25px rgba(17,24,39,.06); border:1px solid var(--line)}
-    .row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
-    input[type="text"],textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px}
-    button{background:var(--brand);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
-    table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;font-size:0.95rem}
-    .small{font-size:0.85rem;color:var(--muted)}
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#f8fafc}
-    .ok{color:#065f46;background:#ecfdf5;border-color:#86efac}
-    .err{color:#7f1d1d;background:#fef2f2;border-color:#fecaca}
-    .login{display:flex;gap:8px;align-items:center}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SNGR · Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#2F338F; --brand-600:#242870; --bg:#f4f6fb; --card:#fff; --muted:#6b7280; --line:#e5e7eb; --radius:14px;
+      --ok:#065f46; --err:#7f1d1d;
+    }
+    *{box-sizing:border-box}
+    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; margin:0; background:var(--bg); color:#1f2937}
+    header{background:linear-gradient(180deg,var(--brand),var(--brand-600)); color:#fff; padding:18px}
+    .wrap{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px}
+    .container{max-width:980px;margin:20px auto;padding:16px}
+    .card{background:var(--card); border-radius:12px; padding:16px; box-shadow:0 10px 25px rgba(17,24,39,.06); border:1px solid var(--line)}
+    .row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+    input[type="text"],textarea,select, input[type="password"]{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px}
+    button{background:var(--brand);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer; transition: background 0.1s}
+    button:hover { background: var(--brand-600); }
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;font-size:0.95rem}
+    .small{font-size:0.85rem;color:var(--muted)}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#f8fafc; font-weight: 600}
+    .ok{color:var(--ok);background:#ecfdf5;border-color:#86efac}
+    .err{color:var(--err);background:#fef2f2;border-color:#fecaca}
+    .login{display:flex;gap:8px;align-items:center}
+    .status-msg{padding:8px; border-radius: 8px; font-weight: 600;}
+    .status-ok { background: #ecfdf5; color: var(--ok); }
+    .status-err { background: #fef2f2; color: var(--err); }
+  </style>
 </head>
 <body>
 <header>
-  <div class="wrap">
-    <h2>SNGR · Panel Administrador</h2>
-  </div>
+  <div class="wrap">
+    <h2>SNGR · Panel Administrador</h2>
+  </div>
 </header>
 
 <div class="container">
-  <div class="card">
-    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
-      <div>
-        <strong>Administración</strong>
-        <div class="small">Habilita participantes de forma individual o masiva</div>
-      </div>
-      <div style="width:320px">
-        <!-- LOGIN -->
-        <div class="login">
-          <input id="adminKey" type="password" placeholder="ADMIN KEY (obligatorio)" />
-          <button id="btn-login">Entrar</button>
-        </div>
-      </div>
-    </div>
+  <div class="card">
+    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+      <div>
+        <strong>Administración</strong>
+        <div class="small">Habilita participantes de forma individual o masiva</div>
+      </div>
+      <div style="width:320px">
+                <div class="login">
+          <input id="adminKey" type="password" placeholder="ADMIN KEY (obligatorio)" />
+          <button id="btn-login">Entrar</button>
+        </div>
+      </div>
+    </div>
 
-    <hr style="margin:12px 0">
+    <hr style="margin:12px 0">
 
-    <div id="panel" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 320px;gap:12px">
-        <div>
-          <div class="row">
-            <input id="searchCed" type="text" placeholder="Buscar por cédula..." />
-            <button id="btn-search">Buscar</button>
-            <button id="btn-refresh">Refrescar</button>
-          </div>
+    <div id="panel" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:12px">
+        <div>
+          <div class="row">
+            <input id="searchCed" type="text" placeholder="Buscar por cédula..." />
+            <button id="btn-search">Buscar</button>
+            <button id="btn-refresh">Refrescar</button>
+          </div>
 
-          <div class="row">
-            <button id="btn-enable-selected">Habilitar seleccionados</button>
-            <button id="btn-disable-selected">Deshabilitar seleccionados</button>
-          </div>
+          <div class="row">
+            <button id="btn-enable-selected">Habilitar seleccionados</button>
+            <button id="btn-disable-selected">Deshabilitar seleccionados</button>
+          </div>
 
-          <div id="table-wrap" class="card" style="margin-top:10px">
-            <table id="tbl">
-              <thead><tr><th><input id="chk-all" type="checkbox"></th><th>Cédula</th><th>Apellidos</th><th>Nombres</th><th>Estado</th><th>Acción</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
+          <div id="table-wrap" class="card" style="margin-top:10px">
+            <table id="tbl">
+              <thead><tr><th><input id="chk-all" type="checkbox"></th><th>Cédula</th><th>Apellidos</th><th>Nombres</th><th>Estado</th><th>Acción</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
 
-        <div>
-          <div class="small">Carga masiva (CSV)</div>
-          <textarea id="csvArea" rows="10" placeholder="cedula,apellidos,nombres,modalidad,fecha,horaInicio,horaFin"></textarea>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="btn-upload">Cargar CSV</button>
-            <button id="btn-clear">Limpiar</button>
-          </div>
+        <div>
+          <div class="small">Carga masiva de datos individuales (CSV)</div>
+          <textarea id="csvArea" rows="10" placeholder="cedula,apellidos,nombres,modalidad,fecha,horaInicio,horaFin"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="btn-upload">Cargar CSV</button>
+            <button id="btn-clear">Limpiar</button>
+          </div>
 
-          <hr style="margin:12px 0">
-          <div class="small">Resultados</div>
-          <div id="adminMsg" class="card" style="margin-top:8px;min-height:80px"></div>
-        </div>
-      </div>
-    </div>
+          <hr style="margin:12px 0">
+          <div class="small">Resultados</div>
+          <div id="adminMsg" class="card status-msg" style="margin-top:8px;min-height:80px"></div>
+        </div>
+      </div>
+    </div>
 
-  </div>
+  </div>
 </div>
 
 <script>
-const API_URL = "https://tight-breeze-c893.dylanvillasagua.workers.dev/";
+// ==========================================
+// ⚠️ IMPORTANTE: PEGA AQUÍ TU URL DEL WEB APP
+// ==========================================
+const API_URL = "https://yellow-cherry-162f.dylanvillasagua.workers.dev/";
+
+// Elementos UI
+const tblBody = document.querySelector('#tbl tbody');
+const adminMsgEl = document.getElementById('adminMsg');
 
 // Helpers
 function adminKey() { return document.getElementById('adminKey').value.trim(); }
-function setAdminMsg(txt, err) {
-  const el = document.getElementById('adminMsg');
-  el.textContent = txt;
-  el.style.color = err ? '#7f1d1d' : '#065f46';
+function setAdminMsg(txt, isError) {
+  adminMsgEl.textContent = txt;
+  adminMsgEl.className = `card status-msg ${isError ? 'status-err' : 'status-ok'}`;
 }
 
-// Generic POST to worker with admin header when provided
-async function workerPost(form) {
-  const headers = { 'Accept': 'application/json' };
-  const key = adminKey();
-  if (key) headers['x-admin-key'] = key;
-  const res = await fetch(API_URL, { method:'POST', headers, body: form });
-  if (!res.ok) throw new Error('Error ' + res.status);
-  return res.json();
+// Generic POST function (sends JSON body, as expected by Code.gs doPost)
+async function workerPost(data) {
+  const headers = { 'Content-Type': 'application/json' }; 
+  const key = adminKey();
+  
+  // Usamos el header X-Admin-Key para un control de acceso (debes implementarlo en tu Code.gs)
+  if (key) headers['X-Admin-Key'] = key; 
+  
+  const res = await fetch(API_URL, { 
+    method: 'POST', 
+    headers: headers, 
+    body: JSON.stringify(data) // Enviamos el objeto de acción como JSON
+  });
+  
+  if (!res.ok) throw new Error('Error ' + res.status);
+  return res.json();
 }
 
-// UI actions
+// -----------------------------------------------------------
+// ACCESO Y CARGA DE DATOS
+// -----------------------------------------------------------
+
 document.getElementById('btn-login').addEventListener('click', () => {
-  const key = adminKey();
-  if (!key) { alert('Ingresa ADMIN KEY'); return; }
-  // intentamos una llamada simple para validar
-  const form = new URLSearchParams();
-  form.append('action','listarParticipantes');
-  workerPost(form).then(()=> {
-    document.getElementById('panel').style.display = 'block';
-    setAdminMsg('Acceso correcto. Cargando lista...');
-    loadList('');
-  }).catch(e=>{
-    alert('Clave inválida o error: ' + e.message);
-  });
+  const key = adminKey();
+  if (!key) { setAdminMsg('Ingresa ADMIN KEY', true); return; }
+  
+  // Intenta listar para validar la clave (asume que la clave debe validarse en el servidor)
+  const data = { action: 'listarParticipantes' };
+  workerPost(data).then(()=> {
+    document.getElementById('panel').style.display = 'block';
+    setAdminMsg('Acceso correcto. Cargando lista...');
+    loadList('');
+  }).catch(e=>{
+    setAdminMsg('Clave inválida o error: ' + e.message, true);
+  });
 });
 
-const tblBody = document.querySelector('#tbl tbody');
-
 async function loadList(q='') {
-  try {
-    setAdminMsg('Cargando...');
-    const form = new URLSearchParams();
-    form.append('action','listarParticipantes');
-    form.append('q', q);
-    const data = await workerPost(form);
-    const list = data.list || [];
-    tblBody.innerHTML = '';
-    list.forEach(p => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input type="checkbox" data-ced="${p.cedula}"></td>
-        <td>${p.cedula}</td>
-        <td>${p.apellidos || ''}</td>
-        <td>${p.nombres || ''}</td>
-        <td><span class="badge ${p.estado_asistencia === 'HABILITADO' ? 'ok':'err'}">${p.estado_asistencia || 'PENDIENTE'}</span></td>
-        <td><button data-ced="${p.cedula}" class="btn-action">${p.estado_asistencia === 'HABILITADO' ? 'Deshabilitar' : 'Habilitar'}</button></td>
-      `;
-      tblBody.appendChild(tr);
-    });
-    setAdminMsg('Lista cargada. Total: ' + list.length);
-  } catch (e) {
-    console.error(e);
-    setAdminMsg('Error: ' + e.message, true);
-  }
+  try {
+    setAdminMsg('Cargando...');
+    
+    // La búsqueda por 'q' no está implementada en Apps Script, pero listamos todo
+    const data = { action: 'listarParticipantes' };
+    const res = await workerPost(data);
+    
+    const list = res.list || res; // Maneja si el resultado es {list: []} o solo el array []
+    tblBody.innerHTML = '';
+    
+    list.forEach(p => {
+      // Basamos la visualización en p.habilitado (Col J) y p.estado_asistencia (Col K)
+      const isHabilitado = p.habilitado === 'SI';
+      const isAsistio = p.estado_asistencia === 'ASISTIÓ';
+      
+      let badgeClass = 'err';
+      let badgeText = 'NO HABILITADO';
+
+      if (isAsistio) {
+          badgeClass = 'ok';
+          badgeText = 'ASISTIÓ';
+      } else if (isHabilitado) {
+          badgeClass = 'ok';
+          badgeText = 'HABILITADO';
+      }
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="checkbox" data-ced="${p.cedula}"></td>
+        <td>${p.cedula}</td>
+        <td>${p.apellidos || ''}</td>
+        <td>${p.nombres || ''}</td>
+        <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+        <td><button data-ced="${p.cedula}" class="btn-action">${isHabilitado ? 'Deshabilitar' : 'Habilitar'}</button></td>
+      `;
+      tblBody.appendChild(tr);
+    });
+    setAdminMsg('Lista cargada. Total: ' + list.length);
+  } catch (e) {
+    console.error(e);
+    setAdminMsg('Error cargando lista: ' + e.message, true);
+  }
 }
 
+// Eventos de la tabla (Botón individual Habilitar/Deshabilitar)
+document.getElementById('table-wrap').addEventListener('click', async (ev) => {
+  const btn = ev.target.closest('.btn-action');
+  if (!btn) return;
+  const ced = btn.dataset.ced;
+  try {
+    setAdminMsg('Procesando...');
+    // Llama a la nueva función de toggle en Code.gs
+    const data = { action: 'toggleHabilitar', cedula: ced };
+    const res = await workerPost(data);
+    setAdminMsg(res.message || 'OK');
+    loadList(''); // Recarga la lista para actualizar el estado
+  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
+});
+
+// Eventos de refrescar y buscar
 document.getElementById('btn-refresh').addEventListener('click', ()=> loadList(''));
 document.getElementById('btn-search').addEventListener('click', ()=> loadList(document.getElementById('searchCed').value.trim()));
 
-document.getElementById('table-wrap').addEventListener('click', async (ev) => {
-  const btn = ev.target.closest('.btn-action');
-  if (!btn) return;
-  const ced = btn.dataset.ced;
-  try {
-    setAdminMsg('Procesando...');
-    const form = new URLSearchParams();
-    form.append('action','toggleHabilitar');
-    form.append('cedula', ced);
-    const res = await workerPost(form);
-    setAdminMsg(res.message || 'OK');
-    loadList('');
-  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
-});
+// -----------------------------------------------------------
+// CARGA Y ACCIONES MASIVAS
+// -----------------------------------------------------------
 
 document.getElementById('btn-upload').addEventListener('click', async () => {
-  const txt = document.getElementById('csvArea').value.trim();
-  if (!txt) return setAdminMsg('No hay datos', true);
-  try {
-    setAdminMsg('Enviando...');
-    const form = new URLSearchParams();
-    form.append('action','cargaMasiva');
-    form.append('csv', txt);
-    const res = await workerPost(form);
-    setAdminMsg('Procesados: ' + (res.processed||0) + '. Agregados: ' + (res.added||0));
-    loadList('');
-  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
+  const csv = document.getElementById('csvArea').value.trim();
+  if (!csv) return setAdminMsg('No hay datos para cargar', true);
+  try {
+    setAdminMsg('Enviando carga masiva...');
+    const data = { action: 'cargaMasiva', csv: csv };
+    const res = await workerPost(data);
+    setAdminMsg(`Carga completada. Total: ${res.processed||0} líneas procesadas. Añadidos: ${res.added||0}`);
+    loadList('');
+  } catch (e) { setAdminMsg('Error en carga masiva: ' + e.message, true); }
 });
 
 document.getElementById('btn-clear').addEventListener('click', ()=> document.getElementById('csvArea').value='');
 
+// Selección de checkboxes
 document.getElementById('chk-all').addEventListener('change', (e) => {
-  document.querySelectorAll('#tbl tbody input[type="checkbox"]').forEach(c => c.checked = e.target.checked);
+  document.querySelectorAll('#tbl tbody input[type="checkbox"]').forEach(c => c.checked = e.target.checked);
 });
 
-document.getElementById('btn-enable-selected').addEventListener('click', async () => {
-  const ceds = Array.from(document.querySelectorAll('#tbl tbody input[type="checkbox"]:checked')).map(i=>i.dataset.ced);
-  if (!ceds.length) return setAdminMsg('No hay seleccionados', true);
-  try {
-    setAdminMsg('Habilitando...');
-    const form = new URLSearchParams();
-    form.append('action','habilitarMultiple');
-    form.append('cedulas', ceds.join(','));
-    const res = await workerPost(form);
-    setAdminMsg(res.message || 'OK');
-    loadList('');
-  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
-});
+async function handleMassAction(action) {
+    const ceds = Array.from(document.querySelectorAll('#tbl tbody input[type="checkbox"]:checked')).map(i=>i.dataset.ced);
+    if (!ceds.length) return setAdminMsg('No hay participantes seleccionados', true);
 
-document.getElementById('btn-disable-selected').addEventListener('click', async () => {
-  const ceds = Array.from(document.querySelectorAll('#tbl tbody input[type="checkbox"]:checked')).map(i=>i.dataset.ced);
-  if (!ceds.length) return setAdminMsg('No hay seleccionados', true);
-  try {
-    setAdminMsg('Deshabilitando...');
-    const form = new URLSearchParams();
-    form.append('action','deshabilitarMultiple');
-    form.append('cedulas', ceds.join(','));
-    const res = await workerPost(form);
-    setAdminMsg(res.message || 'OK');
-    loadList('');
-  } catch (e) { setAdminMsg('Error: ' + e.message, true); }
-});
+    try {
+        setAdminMsg(action === 'habilitarMultiple' ? 'Habilitando seleccionados...' : 'Deshabilitando seleccionados...');
+        const data = { action: action, cedulas: ceds.join(',') };
+        const res = await workerPost(data);
+        setAdminMsg(res.message || 'Proceso finalizado.');
+        loadList('');
+    } catch (e) { 
+        setAdminMsg('Error en acción masiva: ' + e.message, true); 
+    }
+}
+
+document.getElementById('btn-enable-selected').addEventListener('click', () => handleMassAction('habilitarMultiple'));
+document.getElementById('btn-disable-selected').addEventListener('click', () => handleMassAction('deshabilitarMultiple'));
 </script>
 </body>
 </html>
